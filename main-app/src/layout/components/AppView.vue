@@ -1,11 +1,23 @@
 <script setup lang="ts">
 import { useAppStore } from '@/store/modules/app'
 import { Footer } from '@/components/Footer'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
+import { start } from 'qiankun'
 
 const appStore = useAppStore()
 
 const footer = computed(() => appStore.getFooter)
+
+onMounted(() => {
+  // 启动 qiankun
+  start({
+    sandbox: {
+      experimentalStyleIsolation: true, // 开启样式隔离
+      strictStyleIsolation: false // 禁用严格样式隔离，避免一些样式问题
+    },
+    prefetch: 'all' // 预加载所有微应用
+  })
+})
 </script>
 
 <template>
@@ -24,3 +36,7 @@ const footer = computed(() => appStore.getFooter)
     <Footer v-if="footer" />
   </div>
 </template>
+
+function mounted() {
+  throw new Error('Function not implemented.')
+}

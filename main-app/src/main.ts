@@ -55,10 +55,10 @@ const setupAll = async () => {
 
   setupPermission(app)
 
+  app.mount('#app')
+
   // 注册微应用
   registerApps()
-
-  app.mount('#app')
 }
 
 setupAll()
