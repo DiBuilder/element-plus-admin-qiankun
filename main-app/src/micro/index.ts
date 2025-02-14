@@ -92,13 +92,15 @@ const lifeCycles = {
 // 注册微应用
 export const registerApps = () => {
   registerMicroApps(microApps, lifeCycles)
+}
 
-  // 启动 qiankun
-  // start({
-  //   sandbox: {
-  //     experimentalStyleIsolation: true, // 开启样式隔离
-  //     strictStyleIsolation: false // 禁用严格样式隔离，避免一些样式问题
-  //   },
-  //   prefetch: 'all' // 预加载所有微应用
-  // })
+// 启动 qiankun
+export const startApps = (): void => {
+  start({
+    sandbox: {
+      experimentalStyleIsolation: true, // 开启样式隔离
+      strictStyleIsolation: false // 禁用严格样式隔离，避免一些样式问题
+    },
+    prefetch: 'all' // 预加载所有微应用
+  })
 }
