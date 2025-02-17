@@ -5,7 +5,7 @@ VITE_NODE_ENV=production
 VITE_API_BASE_PATH=
 
 # 打包路径
-VITE_BASE_PATH=/
+VITE_BASE_PATH=/main/
 
 # 是否删除debugger
 VITE_DROP_DEBUGGER=true
@@ -39,3 +39,6 @@ VITE_USE_ONLINE_ICON=false
 
 # 是否隐藏全局设置按钮
 VITE_HIDE_GLOBAL_SETTING=false
+
+# 子应用配置文件名称
+VITE_USE_SUB_CONFIG_FILE_NAME=microApp

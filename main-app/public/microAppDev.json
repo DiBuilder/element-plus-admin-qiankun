@@ -1,0 +1,12 @@
+[
+  {
+    "name": "systemApp",
+    "entry": "//localhost:4001",
+    "activeRule": "/system"
+  },
+  {
+    "name": "exampleApp",
+    "entry": "//localhost:4002",
+    "activeRule": "/example"
+  }
+]

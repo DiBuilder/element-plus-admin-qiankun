@@ -33,20 +33,13 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
   }
   return {
     base: env.VITE_BASE_PATH,
-    server: {
-      port: 4001,
-      cors: true,
-      origin: 'http://localhost:4002',
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      }
-    },
     plugins: [
-      qiankun('system-app', {
+      qiankun('example-app', {
         useDevMode: true
       }),
       Vue({
         script: {
+          // 开启defineModel
           defineModel: true
         }
       }),
@@ -89,7 +82,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       PurgeIcons(),
       env.VITE_USE_MOCK === 'true'
         ? viteMockServe({
-            ignore: /^_/,
+            ignore: /^\_/,
             mockPath: 'mock',
             localEnabled: !isBuild,
             prodEnabled: isBuild,
@@ -105,6 +98,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       }),
       UnoCSS()
     ],
+
     css: {
       preprocessorOptions: {
         less: {
@@ -131,29 +125,39 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       drop: env.VITE_DROP_DEBUGGER === 'true' ? ['debugger'] : undefined
     },
     build: {
-      target: 'esnext',
-      cssCodeSplit: true,
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          keep_infinity: true,
-          drop_console: env.VITE_DROP_CONSOLE === 'true',
-          drop_debugger: env.VITE_DROP_DEBUGGER === 'true'
+      target: 'es2015',
+      outDir: env.VITE_OUT_DIR || 'dist',
+      sourcemap: env.VITE_SOURCEMAP === 'true',
+      // brotliSize: false,
+      rollupOptions: {
+        plugins: env.VITE_USE_BUNDLE_ANALYZER === 'true' ? [visualizer()] : undefined,
+        // 拆包
+        output: {
+          manualChunks: {
+            'vue-chunks': ['vue', 'vue-router', 'pinia', 'vue-i18n'],
+            'element-plus': ['element-plus'],
+            'wang-editor': ['@wangeditor/editor', '@wangeditor/editor-for-vue'],
+            echarts: ['echarts', 'echarts-wordcloud']
+          }
         }
       },
-      rollupOptions: {
-        input: 'src/main.ts',
-        output: {
-          format: 'umd',
-          entryFileNames: 'js/[name].[hash].js',
-          chunkFileNames: 'js/[name].[hash].js',
-          assetFileNames: 'assets/[name].[hash].[ext]',
-          globals: {
-            vue: 'Vue'
-          }
-        },
-        external: ['vue']
-      }
+      cssCodeSplit: !(env.VITE_USE_CSS_SPLIT === 'false'),
+      cssTarget: ['chrome31']
+    },
+    server: {
+      port: 4000,
+      proxy: {
+        // 选项写法
+        '/api': {
+          target: 'http://127.0.0.1:8000',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '')
+        }
+      },
+      hmr: {
+        overlay: false
+      },
+      host: '0.0.0.0'
     },
     optimizeDeps: {
       include: [

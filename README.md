@@ -10,15 +10,55 @@ pnpm install
 # 启动项目
 pnpm dev
 ```
-主应用main-app地址：http://localhost:4000/ 
-子应用system-app地址：http://localhost:4001/  
-子应用example-app地址：http://localhost:4002/  
-
+- 主应用main-app地址：http://localhost:4000/ 
+- 子应用system-app地址：http://localhost:4001/  
+- 子应用example-app地址：http://localhost:4002/  
+- [线上demo](http://single-domain.scorp.fun/)
 ## 改造过程简单记录
 1. 安装qiankun
 ```bash
 pnpm add qiankun
 ```
+## 部署项目记录
+### 单域名部署方式
+#### 部署目录结构
+```
+single-domain.scorp.fun/   # 根目录文件夹
+├── main/                  # 主应用包
+└── subapp/                # 子应用目录
+    ├── system/            # 系统管理子应用
+    └── example/           # 示例子应用
+```
+
+#### nginx配置
+```bash
+# nginx部署参数记录
+location / {
+  root /www/wwwroot/single-domain.scorp.fun/main;
+  index index.html;
+  try_files $uri $uri/ /index.html;
+  
+  add_header Access-Control-Allow-Origin *;
+  add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';
+  add_header Access-Control-Allow-Headers '*';
+  if ($request_method = 'OPTIONS') {
+      return 204;
+  }
+}
+
+location /subapp {
+  alias /www/wwwroot/single-domain.scorp.fun/subapp;
+  try_files $uri $uri/ $uri/index.html;
+  
+  add_header Access-Control-Allow-Origin *;
+  add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';
+  add_header Access-Control-Allow-Headers '*';
+  if ($request_method = 'OPTIONS') {
+      return 204;
+  }
+}
+```
+
 ## Git 贡献提交规范
 
 - `feat` 新功能

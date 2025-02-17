@@ -251,7 +251,7 @@ const crudSchemas = reactive<CrudSchema[]>([
 const { allSchemas } = useCrudSchemas(crudSchemas)
 
 const AddAction = () => {
-  push('/example/example-add')
+  push('/example-add')
 }
 
 const delLoading = ref(false)
@@ -266,7 +266,7 @@ const delData = async (row: TableData | null) => {
 }
 
 const action = (row: TableData, type: string) => {
-  push(`/example/example-${type}?id=${row.id}`)
+  push(`/example-${type}?id=${row.id}`)
 }
 </script>
 

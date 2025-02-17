@@ -14,28 +14,28 @@ globalState.onGlobalStateChange((state, prev) => {
 })
 
 // 微应用配置
-const microApps: RegistrableApp<any>[] = [
-  {
-    name: 'systemApp',
-    entry: '//localhost:4001',
-    container: '#subapp-viewport',
-    activeRule: '/system',
-    props: {
-      globalState,
-      mainStore: (window as any).__MAIN_STORE__
-    }
-  },
-  {
-    name: 'exampleApp',
-    entry: '//localhost:4002',
-    container: '#subapp-viewport',
-    activeRule: '/example',
-    props: {
-      globalState,
-      mainStore: (window as any).__MAIN_STORE__
-    }
-  }
-]
+// const microApps: RegistrableApp<any>[] = [
+//   {
+//     name: 'systemApp',
+//     entry: '//localhost:4001',
+//     container: '#subapp-viewport',
+//     activeRule: '/system',
+//     props: {
+//       globalState,
+//       mainStore: (window as any).__MAIN_STORE__
+//     }
+//   },
+//   {
+//     name: 'exampleApp',
+//     entry: '//localhost:4002',
+//     container: '#subapp-viewport',
+//     activeRule: '/example',
+//     props: {
+//       globalState,
+//       mainStore: (window as any).__MAIN_STORE__
+//     }
+//   }
+// ]
 
 // 全局生命周期钩子
 const lifeCycles = {
@@ -90,17 +90,28 @@ const lifeCycles = {
 }
 
 // 注册微应用
-export const registerApps = () => {
+export const registerApps = async () => {
+  const response = await fetch(`/${import.meta.env.VITE_USE_SUB_CONFIG_FILE_NAME}.json`)
+  const file = await response.json()
+  console.log(file)
+  // 获取微应用配置
+  const microApps: RegistrableApp<any>[] = file.map((item: any) => {
+    return {
+      name: item.name,
+      entry: item.entry,
+      container: '#subapp-viewport',
+      activeRule: item.activeRule,
+      props: {
+        globalState,
+        mainStore: (window as any).__MAIN_STORE__,
+        cssIsolation: true // 启用样式隔离
+      }
+    }
+  })
   registerMicroApps(microApps, lifeCycles)
 }
 
 // 启动 qiankun
 export const startApps = (): void => {
-  start({
-    sandbox: {
-      experimentalStyleIsolation: true, // 开启样式隔离
-      strictStyleIsolation: false // 禁用严格样式隔离，避免一些样式问题
-    },
-    prefetch: 'all' // 预加载所有微应用
-  })
+  start()
 }
